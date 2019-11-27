@@ -26,13 +26,6 @@ def get_output_path(input_path, output_dir):
   return f"{output_dir.rstrip('/')}/{filename}.png"
 
 
-def get_plot_title(flag):
-  if not flag:
-    return 'Map of initial input'
-  elif flag == '-h':
-    return "Heatmap of custom 'interestingness' heuristic"
-
-
 def create_plot(points, bounding_box, input_path, map_path, output_dir):
   # create fig and fit axes to bounding box
   fig, ax = plt.subplots()
@@ -60,11 +53,11 @@ def create_plot(points, bounding_box, input_path, map_path, output_dir):
     # heuristic heatmap
     plt.scatter(points.lon, points.lat, zorder=1, c=points['interesting_heuristic'], s=points['interesting_heuristic']*8+0.2, cmap=plt.cm.cool)
     cbar = plt.colorbar()
-    cbar.set_label("Interesting heuristic value", rotation=270, labelpad=15)
+    cbar.set_label("Custom 'interestingness' heuristic", rotation=270, labelpad=15)
 
 
   # add labels
-  plt.title(get_plot_title(flag))
+  plt.title('Map of Input Coordinates')
   plt.xlabel('Longitude (\u00b0)')
   plt.ylabel('Latitude (\u00b0)')
   plt.xticks(rotation=20)

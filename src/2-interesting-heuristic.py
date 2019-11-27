@@ -6,48 +6,49 @@ import requests
 from sklearn.preprocessing import MinMaxScaler
 
 
-def interesting_heuristic(amenity):
+def interesting_heuristic(amenity, num_rows):
   # log progress
   global row_count
   row_count += 1
-  if row_count % 100 == 0:
-    print(f"Processing row {row_count}...")
+  if row_count % 500 == 0:
+    print(f"Processing row {row_count} of {num_rows}...")
 
 
   # detetermine interesting heuristic using a variety of factors
   heuristic = 0
 
+  if amenity['name']:  # if name is null, let heuristic = 0
 
-  # boost score if amenity has wikidata (based on length of wiki entry)
-  if 'wikidata' in amenity['tags'] or 'brand:wikidata' in amenity['tags']:
-    wikitag = amenity['tags']['wikidata'] if 'wikidata' in amenity['tags'] else amenity['tags']['brand:wikidata']
-    res = requests.get('https://www.wikidata.org/wiki/' + wikitag)
-    
-    if 'Content-Length' in res.headers and 'wikidata' in amenity['tags']:
-      heuristic += int(res.headers['Content-Length']) / 100
+    # boost score if amenity has wikidata (based on length of wiki entry)
+    if 'wikidata' in amenity['tags'] or 'brand:wikidata' in amenity['tags']:
+      wikitag = amenity['tags']['wikidata'] if 'wikidata' in amenity['tags'] else amenity['tags']['brand:wikidata']
+      res = requests.get('https://www.wikidata.org/wiki/' + wikitag)
       
-    else:
-      # problem with GET request, or amenity owned by a big brand; give approx. avg length
-      heuristic += 30
-    
-  
-  # adjust score depending on tags
-  with open('src/boring-amenities.txt', 'r') as f:  # read list of boring amenities
-    boring_amenities = f.read().splitlines()
-    
-    # lower score of boring amenities and chain restaurants
-    if amenity['amenity'] in boring_amenities or 'brand' in amenity['tags']:
-      heuristic -= 50
-    
-    else:
-      # boost score if amenity has certain tags
-      if any(t in amenity['tags'] for t in ['leisure', 'tourism']):
-        heuristic += 20
+      if 'Content-Length' in res.headers and 'wikidata' in amenity['tags']:
+        heuristic += int(res.headers['Content-Length']) / 100
+        
+      else:
+        # problem with GET request, or amenity owned by a big brand; give approx. avg length
+        heuristic += 30
       
-      # boost score of food-related amenities with lots of tags
-      if amenity['amenity'] in ['bar', 'cafe', 'ice_cream', 'pub', 'restaurant']:
-        if len(amenity['tags']) >= 13:
-          heuristic += 50
+    
+    # adjust score depending on tags
+    with open('src/boring-amenities.txt', 'r') as f:  # read list of boring amenities
+      boring_amenities = f.read().splitlines()
+      
+      # lower score of boring amenities and chain restaurants
+      if amenity['amenity'] in boring_amenities or 'brand' in amenity['tags']:
+        heuristic -= 50
+      
+      else:
+        # boost score if amenity has certain tags
+        if any(t in amenity['tags'] for t in ['leisure', 'tourism']):
+          heuristic += 20
+        
+        # boost score of food-related amenities with lots of tags
+        if amenity['amenity'] in ['bar', 'cafe', 'ice_cream', 'pub', 'restaurant']:
+          if len(amenity['tags']) >= 13:
+            heuristic += 50
 
 
   return heuristic
@@ -75,9 +76,11 @@ def main(input_path, output_dir):
   # determine interesting heuristic of each amenity
   global row_count  # global var for logging progress of HTTP calls
   row_count = 0
-  points['interesting_heuristic'] = points \
-    .dropna(subset=['name']) \
-    .apply(interesting_heuristic, axis=1)
+  points['interesting_heuristic'] = points.apply(
+    interesting_heuristic,
+    num_rows=len(points.index),
+    axis=1
+  )
 
   # adjust heuristics based on amenity uniqueness (more interesting if more unique)
   points = uniqueness_adjustment(points)
@@ -89,6 +92,7 @@ def main(input_path, output_dir):
   # write data to output file
   output_path = f"{output_dir.rstrip('/')}/{input_path.replace('.', '/').split('/')[-2]}-heuristic.json"
   points \
+    .drop(columns=['duplicate_amenity_count', 'duplicate_name_count']) \
     .fillna({'interesting_heuristic':0}) \
     .sort_values(by='interesting_heuristic', ascending=False) \
     .to_json(output_path, orient='records', lines=True)
