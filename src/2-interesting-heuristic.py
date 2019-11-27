@@ -11,7 +11,7 @@ def interesting_heuristic(amenity):
   global row_count
   row_count += 1
   if row_count % 100 == 0:
-    print(f"Processing row {row_count}...")
+    print("Processing row " + str(row_count) + " ...")
 
 
   # detetermine interesting heuristic using a variety of factors
@@ -37,17 +37,17 @@ def interesting_heuristic(amenity):
     
     # lower score of boring amenities and chain restaurants
     if amenity['amenity'] in boring_amenities or 'brand' in amenity['tags']:
-      heuristic -= 50
+      heuristic -= 100
     
     else:
       # boost score if amenity has certain tags
       if any(t in amenity['tags'] for t in ['leisure', 'tourism']):
-        heuristic += 20
+        heuristic += 70
       
       # boost score of food-related amenities with lots of tags
       if amenity['amenity'] in ['bar', 'cafe', 'ice_cream', 'pub', 'restaurant']:
-        if len(amenity['tags']) >= 13:
-          heuristic += 50
+        if len(amenity['tags']) >= 8:
+          heuristic += 40
 
 
   return heuristic
@@ -87,11 +87,11 @@ def main(input_path, output_dir):
   points['interesting_heuristic'] = scaler.fit_transform(points[['interesting_heuristic']])
 
   # write data to output file
-  output_path = f"{output_dir.rstrip('/')}/{input_path.replace('.', '/').split('/')[-2]}-heuristic.json"
+  # output_path = f"{output_dir.rstrip('/')}/{input_path.replace('.', '/').split('/')[-2]}-heuristic.json"
   points \
     .fillna({'interesting_heuristic':0}) \
     .sort_values(by='interesting_heuristic', ascending=False) \
-    .to_json(output_path, orient='records', lines=True)
+    .to_json("output_dir.rstrip('/')"+"/"+input_path.replace('.', '/').split('/')[-2]+"-heuristic.json", orient='records', lines=True)
 
 
 if __name__ == '__main__':
