@@ -10,8 +10,8 @@ def interesting_heuristic(amenity, num_rows):
   # log progress
   global row_count
   row_count += 1
-  if row_count % 500 == 0:
-    print(f"Processing row {row_count} of {num_rows}...")
+  if row_count % 100 == 0:
+    print("Processing row " + str(row_count) + " ...")
 
 
   # detetermine interesting heuristic using a variety of factors
