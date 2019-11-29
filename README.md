@@ -29,7 +29,21 @@ Returns: JSON file containing the same points, but with an added `interesting_he
 ```
 $ python3 src/2-interesting-heuristic.py input/downtown-vancouver.json output/
 ```
+<br>**3-distance.py**
 
+Args: `input-path`, `image-path`,`output-directory` \
+Returns: Estimated walking distance, estimated walking time, and veeery rough path to destination
+```
+$ python3 3-distance.py ../output/downtown-vancouver-heuristic.json ../input/downtown-vancouver.png ../output/
+```
+<br>**4-interesting-locations.py**
+
+Args: `input-path`, `image-path`,`output-directory` \
+Returns: A map with departure location, destination location, and some iteresting locations around the path 
+
+```
+$ python3 4-interesting-locations.py ../output/downtown-vancouver-heuristic.json ../input/downtown-vancouver.png ../output/
+```
 
 <br>**plot-on-map.py**
 
