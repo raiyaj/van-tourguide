@@ -60,7 +60,7 @@ $ python3 5-create-path.py ../output/places-to-visit.json ../output/
 
 <br>**plot-on-map.py**
 
-Args: `input-path`, `path-path`, `map-path`, `output-dir` \
+Args: `input-path`, `path-path` (only if using `-p`), `map-path`, `output-dir` \
 Flags (optional): `-h` (heuristic heatmap), `-c` (clusters), `-p` (haversine path) \
 Returns: PNG image of data points plotted on the provided map. If no map is given, only prints the bounding box (coordinates of rectangular area containing all points), which can be used to download an appropriate map from `openstreetmap.org`.
 ```
