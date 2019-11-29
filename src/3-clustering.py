@@ -6,7 +6,7 @@ from sklearn.cluster import KMeans
 pd.options.mode.chained_assignment = None  # default='warn'
 
 
-def main(input_path, output_path):
+def main(input_path, output_dir):
   # read input data
   points = pd.read_json(input_path, orient='records', lines=True)
 
@@ -20,7 +20,7 @@ def main(input_path, output_path):
   
   # write output
   points = pd.merge(points, X, on=['lat', 'lon'], how='left')
-  points.to_json(output_path, orient='records', lines=True)
+  points.to_json(output_dir.rstrip('/') + '/clusters.json', orient='records', lines=True)
   
 
 if __name__ == '__main__':

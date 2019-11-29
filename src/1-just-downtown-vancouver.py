@@ -13,7 +13,7 @@ def main(input_path, output_dir):
     (points['lat'] <= 49.2953)
   ]
 
-  points.to_json(output_dir.rstrip('/') + '/downtown-vancouver.json', orient='records', lines=True)
+  points.to_json(output_dir.rstrip('/') + '/downtown-van.json', orient='records', lines=True)
 
 
 if __name__ == '__main__':

@@ -33,7 +33,7 @@ def interesting_heuristic(amenity, num_rows):
       
     
     # adjust score depending on tags
-    with open('src/boring-amenities.txt', 'r') as f:  # read list of boring amenities
+    with open('boring-amenities.txt', 'r') as f:  # read list of boring amenities
       boring_amenities = f.read().splitlines()
       
       # lower score of boring amenities and chain restaurants
@@ -90,12 +90,11 @@ def main(input_path, output_dir):
   points['interesting_heuristic'] = scaler.fit_transform(points[['interesting_heuristic']])
 
   # write data to output file
-  output_path = f"{output_dir.rstrip('/')}/{input_path.replace('.', '/').split('/')[-2]}-heuristic.json"
   points \
     .drop(columns=['duplicate_amenity_count', 'duplicate_name_count']) \
     .fillna({'interesting_heuristic':0}) \
     .sort_values(by='interesting_heuristic', ascending=False) \
-    .to_json(output_path, orient='records', lines=True)
+    .to_json(output_dir.rstrip('/') + '/heuristic.json', orient='records', lines=True)
 
 
 if __name__ == '__main__':

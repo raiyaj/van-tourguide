@@ -20,11 +20,6 @@ def get_bounding_box(points):
   return (np.min(points.lon), np.max(points.lon), np.min(points.lat), np.max(points.lat))
 
 
-def get_output_path(input_path, output_dir):
-  filename = input_path.replace('.', '/').split('/')[-2]
-  return f"{output_dir.rstrip('/')}/{filename}.png"
-
-
 def draw_clusters(points, ax):
   num_clusters = points['location_cluster'].nunique()
   
@@ -54,6 +49,17 @@ def get_plot_title(flag):
     return 'Most interesting coordinates, clustered'
   else:
     return 'Input coordinates'
+
+
+def get_output_path(output_dir, flag):
+  if not flag:
+    filename = 'scatterplot'
+  elif flag == '-h':
+    filename = 'heuristic'
+  elif flag == '-c':
+    filename = 'clusters'
+
+  return f"{output_dir.rstrip('/')}/{filename}.png"
   
 
 def create_plot(points, bounding_box, input_path, map_path, output_dir):
@@ -102,12 +108,12 @@ def create_plot(points, bounding_box, input_path, map_path, output_dir):
   # fix layout
   plt.locator_params(nbins=4)  # set number of ticks
   plt.tight_layout()
-  if 'downtown-vancouver' in input_path:
+  if 'downtown-van' in map_path:
     ax.set_aspect(1.25)  # stretch map vertically
 
 
   # save fig
-  plt.savefig(get_output_path(input_path, output_dir), dpi=500)
+  plt.savefig(get_output_path(output_dir, flag), dpi=500)
 
 
 def main(input_path):

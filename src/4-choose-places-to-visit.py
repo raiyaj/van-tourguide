@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 
 
-def main(input_path, output_path):
+def main(input_path, output_dir):
   # read input data
   points = pd.read_json(input_path, orient='records', lines=True)
 
@@ -40,7 +40,7 @@ def main(input_path, output_path):
     
     # if combo has enough variety, output places to visit
     if places_to_visit['amenity'].is_unique:
-      places_to_visit.to_json(output_path, orient='records', lines=True)
+      places_to_visit.to_json(output_dir.rstrip('/') + '/places-to-visit.json', orient='records', lines=True)
       break
 
 
