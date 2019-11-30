@@ -39,7 +39,8 @@ def draw_clusters(points, ax):
       ellipse_height,
       color='#6d89fc',
       linewidth=0,
-      alpha=0.4
+      alpha=0.4,
+      zorder=2
     )
     ax.add_artist(ellipse)
 
@@ -48,7 +49,7 @@ def draw_path(path):
   # draw n-1 lines to connect the points
   for i in range(len(path) - 1):
     pair = path.iloc[i:i+2]  # rows i and i+1
-    plt.plot(pair['lon'], pair['lat'], color='#1065de', alpha=0.8, linewidth=1.5, zorder=1)
+    plt.plot(pair['lon'], pair['lat'], color='#1065de', alpha=0.8, linewidth=1.5, zorder=3)
 
 
 def get_plot_title(flag):
@@ -85,7 +86,7 @@ def create_plot(points, bounding_box, input_path, map_path, path_path, output_di
   
 
   # plot map as background image
-  ax.imshow(map, extent=bounding_box)  # draw map
+  ax.imshow(map, extent=bounding_box, zorder=0)  # draw map
   
 
   # basic scatterplot
@@ -111,7 +112,7 @@ def create_plot(points, bounding_box, input_path, map_path, path_path, output_di
     plt.scatter(
       points.lon,
       points.lat,
-      zorder=2,
+      zorder=4,
       c=points['interesting_heuristic'],
       s=points['interesting_heuristic']*8+0.2,  # add constant so pts w/ h=0 are plotted too
       cmap=plt.cm.cool
