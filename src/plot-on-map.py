@@ -73,7 +73,7 @@ def get_output_path(output_dir, flag):
   elif flag == '-p':
     filename = 'path'
 
-  return f"{output_dir.rstrip('/')}/{filename}.png"
+  return output_dir.rstrip('/') + '/' + filename + '.png'
   
 
 def create_plot(points, bounding_box, input_path, map_path, path_path, output_dir, flag):

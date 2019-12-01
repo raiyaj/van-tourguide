@@ -90,11 +90,11 @@ def main(input_path, output_dir):
     place = path.iloc[i]
 
     if 'website' in place['tags']:
-      website = f" ({place['tags']['website']})"
+      website = ' (' + place['tags']['website'] + ')'
     else:
       website = ''
 
-    print(f"{i+1}. {place['name']}" + website)
+    print(str(i+1) + '. ' + place['name'] + website)
 
   # print path stats
   distance_walktime(path)
