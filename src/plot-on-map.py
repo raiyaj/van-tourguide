@@ -60,7 +60,7 @@ def get_plot_title(flag):
   elif flag == '-p':
     return 'Haversine path of city tour'
   else:
-    return 'Input coordinates'
+    return 'Input coordinates (roughly) in Downtown Vancouver'
 
 
 def get_output_path(output_dir, flag):

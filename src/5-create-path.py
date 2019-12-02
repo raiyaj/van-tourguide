@@ -10,7 +10,7 @@ from math import radians, cos, sin, asin, sqrt
 def reorder(points):
   # build an order that tries to minimize total haversine distance
 
-  path = pd.DataFrame(columns=['lat', 'lon', 'amenity', 'tags', 'name'])  # empty dataframe
+  path = pd.DataFrame(columns=['lat', 'lon', 'amenity', 'tags', 'name', 'interesting_heuristic'])  # empty dataframe
   addedIdxs = [] 
 
   for i in range(len(points)):
@@ -19,7 +19,17 @@ def reorder(points):
       rightmost = points[points['lon'] == points['lon'].max()]
       addedIdxs.append(rightmost.index[0])
       rightmost = rightmost.iloc[0]  # get first row from filter
-      path = path.append({'lat': rightmost['lat'], 'lon': rightmost['lon'], 'amenity': rightmost['amenity'], 'tags': rightmost['tags'], 'name': rightmost['name']}, ignore_index=True)
+      path = path.append(
+        {
+          'lat': rightmost['lat'],
+          'lon': rightmost['lon'],
+          'amenity': rightmost['amenity'],
+          'tags': rightmost['tags'],
+          'name': rightmost['name'],
+          'interesting_heuristic': rightmost['interesting_heuristic']
+        },
+        ignore_index=True
+      )
 
     else:
       # of the remaining points, find nearest one to the prev point
@@ -38,7 +48,17 @@ def reorder(points):
 
       # add nearest point to path
       nearest = points.iloc[minIndex]
-      path = path.append({'lat': nearest['lat'], 'lon': nearest['lon'], 'amenity': nearest['amenity'], 'tags': nearest['tags'], 'name': nearest['name']}, ignore_index=True)
+      path = path.append(
+        {
+          'lat': nearest['lat'],
+          'lon': nearest['lon'],
+          'amenity': nearest['amenity'],
+          'tags': nearest['tags'],
+          'name': nearest['name'],
+          'interesting_heuristic': nearest['interesting_heuristic']
+        },
+        ignore_index=True
+      )
       addedIdxs.append(minIndex)
 
   return path
@@ -47,7 +67,10 @@ def reorder(points):
 def haversine(lon1, lat1, lon2, lat2):
   """
   Calculate the great circle distance between two points
-  on the earth (specified in decimal degrees)
+  on the Earth (specified in decimal degrees)
+
+  Adapted from Michael Dunn's response at
+  https://stackoverflow.com/questions/4913349/haversine-formula-in-python-bearing-and-distance-between-two-gps-points
   """
   # convert decimal degrees to radians
   lon1, lat1, lon2, lat2 = map(radians, [lon1, lat1, lon2, lat2])
@@ -94,7 +117,7 @@ def main(input_path, output_dir):
     else:
       website = ''
 
-    print(str(i+1) + '. ' + place['name'] + website)
+    print(str(i+1) + '. ' + place['name'] + website + ' | ' + str(round(place['interesting_heuristic'], 2)))
 
   # print path stats
   distance_walktime(path)
