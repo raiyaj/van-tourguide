@@ -54,11 +54,11 @@ def draw_path(path):
 
 def get_plot_title(flag):
   if flag == '-h':
-    return "Input coordinates, coloured by 'interestingness'"
+    return "Input coordinates, colored by 'interestingness'"
   elif flag == '-c':
     return 'Most interesting coordinates, clustered'
   elif flag == '-p':
-    return 'Haversine path of city tour'
+    return 'Straight-line path of city tour'
   else:
     return 'Input coordinates (roughly) in Downtown Vancouver'
 
@@ -129,13 +129,13 @@ def create_plot(points, bounding_box, input_path, map_path, path_path, output_di
 
   # fix layout
   plt.locator_params(nbins=4)  # set number of ticks
-  plt.tight_layout()
+  # plt.tight_layout()
   if 'downtown-van' in map_path:
-    ax.set_aspect(1.25)  # stretch map vertically
+    ax.set_aspect(1.5)  # stretch map vertically
 
 
   # save fig
-  plt.savefig(get_output_path(output_dir, flag), dpi=500)
+  plt.savefig(get_output_path(output_dir, flag), dpi=150)
 
 
 def main(input_path):
